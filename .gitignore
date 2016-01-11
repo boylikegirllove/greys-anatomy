@@ -2,6 +2,10 @@
 /agent/greys-agent.iml
 /core/core.iml
 /agent/agent.iml
+/*/.settings
+/*/.classpath
+/*/.project
+/*/bin
 /target
 /core/target
 /agent/target

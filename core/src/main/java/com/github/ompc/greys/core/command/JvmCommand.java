@@ -30,7 +30,7 @@ public class JvmCommand implements Command {
     private final Collection<GarbageCollectorMXBean> garbageCollectorMXBeans = ManagementFactory.getGarbageCollectorMXBeans();
     private final Collection<MemoryManagerMXBean> memoryManagerMXBeans = ManagementFactory.getMemoryManagerMXBeans();
     private final MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
-    //    private final Collection<MemoryPoolMXBean> memoryPoolMXBeans = ManagementFactory.getMemoryPoolMXBeans();
+    private final Collection<MemoryPoolMXBean> memoryPoolMXBeans = ManagementFactory.getMemoryPoolMXBeans();
     private final OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
     private final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
@@ -55,8 +55,12 @@ public class JvmCommand implements Command {
                     tTable.addRow("GARBAGE-COLLECTORS", drawGarbageCollectorsTable());
                 }
 
-                if (!memoryManagerMXBeans.isEmpty()) {
-                    tTable.addRow("MEMORY-MANAGERS", drawMemoryManagersTable());
+//                if (!memoryManagerMXBeans.isEmpty()) {
+//                    tTable.addRow("MEMORY-MANAGERS", drawMemoryManagersTable());
+//                }
+                if(!memoryPoolMXBeans.isEmpty())
+                {
+                	tTable.addRow("MEMORY-POOL", drawMemoryPoolTable());
                 }
 
                 tTable.addRow("MEMORY", drawMemoryTable());
@@ -162,6 +166,20 @@ public class JvmCommand implements Command {
 
 
                 view.add(name, toCol(memoryManagerMXBean.getMemoryPoolNames()));
+            }
+        }
+
+        return view.rendering();
+    }
+    
+    private String drawMemoryPoolTable() {
+        final TKv view = createKVView();
+
+        for (final MemoryPoolMXBean memoryPoolMXBean : memoryPoolMXBeans) {
+            if (memoryPoolMXBean.isValid()) {
+                final String name = memoryPoolMXBean.getName();
+                view.add(name+"-USAGE", memoryPoolMXBean.getUsage().toString().replaceAll("\\) ", "\r\n"));
+                view.add(name+"-PEAK-USAGE", memoryPoolMXBean.getUsage().toString().replaceAll("\\) ", "\r\n"));
             }
         }
 
