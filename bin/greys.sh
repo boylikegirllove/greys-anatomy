@@ -267,15 +267,15 @@ main()
     parse_arguments "${@}" \
         || exit_on_err 1 "$(usage)"
 
-    #update_if_necessary \
-    #   || echo "update fail, ignore this update." 1>&2
+    update_if_necessary \
+        || echo "update fail, ignore this update." 1>&2
 
-    #local greys_local_version=$(default $(get_local_version) ${DEFAULT_VERSION})
+    local greys_local_version=$(default $(get_local_version) ${DEFAULT_VERSION})
 
-    #if [[ ${greys_local_version} = ${DEFAULT_VERSION} ]]; then
-    #    exit_on_err 1 "greys not found, please check your network."
-    #fi
-    greys_local_version=1.7.3.3-self
+    if [[ ${greys_local_version} = ${DEFAULT_VERSION} ]]; then
+        exit_on_err 1 "greys not found, please check your network."
+    fi
+
     attach_jvm ${greys_local_version}\
         || exit_on_err 1 "attach to target jvm(${TARGET_PID}) failed."
 
